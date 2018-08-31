@@ -3,13 +3,20 @@ package com.example.ken.test;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,11 +30,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private OnRecyclerListener mListener;
     private List<Integer> mImages;
     //private Bitmap bitmap;
+    private FragmentActivity myContext;
+
+    private DialogFragment dialogFragment;
+    private FragmentManager flagmentManager;
 
 
     public RecyclerAdapter(Context context,ArrayList<Integer> image_path_id, ArrayList<String>image_path, OnRecyclerListener listener) {
         this.mInflater = LayoutInflater.from(context);
         this.mContext = context;
+        this.myContext = (FragmentActivity)context;
         this.image_path_id = image_path_id;
         this.image_path = image_path;
         this.mListener = listener;
@@ -40,7 +52,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
 
         /*
         File f = new File(image_path.get(i));
@@ -69,6 +81,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 mListener.onRecyclerClicked(v, i);
+                //Toast.makeText(mContext, "Click：" + image_path.get(i), Toast.LENGTH_SHORT).show();
+               /*
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("確認");
+                builder.setMessage(image_path.get(i));
+                builder.setPositiveButton("はい", null);
+                builder.setNegativeButton("いいえ", null);
+                builder.setNeutralButton("キャンセル", null);
+                builder.create().show();
+                */
+
+                flagmentManager = myContext.getSupportFragmentManager();
+                Bundle args = new Bundle();
+                args.putString("path",image_path.get(i));
+                dialogFragment = new AlertDialogFragment();
+                dialogFragment.setArguments(args);
+                dialogFragment.show(flagmentManager, "test alert dialog");
             }
         });
 
